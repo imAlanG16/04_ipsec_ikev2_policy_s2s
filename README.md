@@ -1,33 +1,3 @@
-<style>
-/* Evitar orfandad de títulos al exportar a PDF */
-h1, h2, h3, h4, h5, h6 {
-  page-break-after: avoid !important;
-  break-after: avoid !important;
-}
-
-/* Evitar que los bloques de artículos se corten entre páginas */
-.article-block {
-  display: block !important;
-  page-break-inside: avoid !important;
-  break-inside: avoid !important;
-}
-
-/* Evitar que imágenes, tablas, código, párrafos, listas y citas se dividan */
-img, table, pre, p, li, tr, blockquote, figure, div[style*="text-align: center"] {
-  page-break-inside: avoid !important;
-  break-inside: avoid !important;
-}
-
-/* Asegurar que el body no interfiera con los saltos de página en la impresión */
-@media print {
-  body {
-    max-width: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-}
-</style>
-
 <div style="text-align: center; padding-top: 50px; font-family: 'Outfit', sans-serif;">
 
 <h1>Instituto Tecnológico de Las Américas (ITLA)</h1>
@@ -43,8 +13,6 @@ img, table, pre, p, li, tr, blockquote, figure, div[style*="text-align: center"]
 <strong>Docente:</strong> Jonathan Esteban Rondon Corniel<br>
 <strong>Fecha de Entrega:</strong> 2 de julio de 2026<br>
 <strong>Video de Exposición:</strong> <a href="https://youtu.be/uqhqnsVqVLY">https://youtu.be/uqhqnsVqVLY</a>
-</div>
-</div>
 
 ## Objetivo de la VPN
 Implementar un túnel de comunicación segura Site-to-Site basado en políticas utilizando la versión moderna del protocolo IKEv2 para la negociación de claves. Este esquema interconecta de forma cifrada las LANs de Oeste y Este a través de internet (simulado por el ISP). IKEv2 ofrece mejoras críticas respecto a IKEv1, como mayor robustez frente a ataques de denegación de servicio (mediante cookies de autenticación), menor intercambio de mensajes de negociación de Fase 1 (reducción de 9 a 4 mensajes), soporte nativo de NAT Traversal, y mecanismos integrados de Keepalive que garantizan mayor confiabilidad en el mantenimiento del túnel.
@@ -55,7 +23,6 @@ La topología física mantiene la configuración física consistente con las ant
 <div style="text-align: center; margin: 10px 0;">
   <img src="images/topologia_s2s.png" width="400" alt="Topología de Red Site-to-Site GNS3">
   <p style="font-size: 0.9em; color: #666; font-style: italic;">Topología física Site-to-Site utilizada en la práctica</p>
-</div>
 
 El direccionamiento IP asignado para este escenario se detalla a continuación:
 
@@ -72,7 +39,7 @@ El direccionamiento IP asignado para este escenario se detalla a continuación:
 
 
 
-<div style="page-break-after: always; break-after: page; display: block; height: 1px; overflow: hidden;"></div>
+<div style="page-break-after: always; break-after: page; display: block; height: 1px; overflow: hidden;">
 
 ## Parámetros Criptográficos Utilizados
 La negociación de claves y cifrado se ejecuta mediante los siguientes parámetros basados en IKEv2:
@@ -95,11 +62,9 @@ La arquitectura IKEv2 en Cisco IOS separa explícitamente las políticas, llaver
 El archivo con todos los comandos aplicados está en la carpeta de recursos de este entregable: [script_configuracion.txt](resources/script_configuracion.txt).
 
 
-<div style="page-break-after: always; break-after: page; display: block; height: 1px; overflow: hidden;"></div>
+<div style="page-break-after: always; break-after: page; display: block; height: 1px; overflow: hidden;">
 
 ## Verificación de Funcionamiento
-
-<div class="article-block">
 
 ### 1. Estado de la Negociación IKEv2 SA (Fase 1)
 Para verificar que el canal seguro de control bajo IKEv2 se ha negociado exitosamente, se ejecuta el comando `show crypto ikev2 sa` en el router `OESTE`. La salida registra una asociación activa establecida hacia el peer público remoto `2.2.2.2` desde la dirección local `1.1.1.2`. 
@@ -109,11 +74,6 @@ La SA está en el estado estable **`READY`**, y reporta los algoritmos configura
 <div style="text-align: center; margin: 10px 0;">
   <img src="images/crypto_ikev2_sa.png" width="400" alt="Asociación IKEv2 SA activa en OESTE">
   <p style="font-size: 0.9em; color: #666; font-style: italic;">Estado IKEv2 SA en el router OESTE confirmando la sesión de control segura y activa</p>
-</div>
-
-</div>
-
-<div class="article-block">
 
 ### 2. Estructura del Crypto Map e Interfaz WAN Protegida
 La estructura del crypto map se verifica mediante el comando `show crypto map` en el router `OESTE`. La salida confirma que el crypto map `MAPA_IKEV2` con secuencia 10 se encuentra configurado para encapsular el tráfico de la lista de acceso 100 (`permit ip 14.3.10.0 0.0.0.255 14.3.20.0 0.0.0.255`) hacia el peer `2.2.2.2` utilizando el transform-set `TS_IKEV2` y el perfil `PERFIL_IKEV2`. Además, se indica que la interfaz física de salida asignada es **`Ethernet0/0`**.
@@ -121,11 +81,6 @@ La estructura del crypto map se verifica mediante el comando `show crypto map` e
 <div style="text-align: center; margin: 10px 0;">
   <img src="images/crypto_map.png" width="400" alt="Detalles de show crypto map en OESTE">
   <p style="font-size: 0.9em; color: #666; font-style: italic;">Salida de show crypto map confirmando la asociación del perfil IKEv2 y la interfaz Ethernet0/0</p>
-</div>
-
-</div>
-
-<div class="article-block">
 
 ### 3. Asociación de Seguridad IPSec Basada en Políticas (Fase 2)
 Al ejecutar el comando `show crypto ipsec sa` en el router `OESTE`, se verifica el estado criptográfico de la interfaz física `Ethernet0/0` protegida por el crypto map `MAPA_IKEV2`. Las identidades protegidas se limitan estrictamente a las subredes LAN origen y destino:
@@ -141,11 +96,6 @@ Esto comprueba que 7 paquetes salientes y 10 paquetes entrantes fueron procesado
 <div style="text-align: center; margin: 10px 0;">
   <img src="images/crypto_ipsec_sa.png" width="400" alt="Estadísticas de show crypto ipsec sa en OESTE">
   <p style="font-size: 0.9em; color: #666; font-style: italic;">Detalles de la SA IPSec de Ethernet0/0 en OESTE protegiendo las subredes LAN específicas</p>
-</div>
-
-</div>
-
-<div class="article-block">
 
 ### 4. Prueba de Conectividad y Trazado de Ruta LAN a LAN (Traceroute de Políticas)
 La validación del canal seguro se realiza en el cliente VPCS ubicado en la LAN de Oeste. Al enviar pings hacia el host remoto en la LAN Este (`14.3.10.11`), se obtiene una conectividad exitosa con **0% de pérdida**.
@@ -158,5 +108,3 @@ Además, al trazar la ruta mediante el comando `tracer 14.3.10.11`, se comprueba
 <div style="text-align: center; margin: 10px 0;">
   <img src="images/ping_lan_a_lan.png" width="400" alt="Ping y traceroute exitosos mediante políticas IKEv2">
   <p style="font-size: 0.9em; color: #666; font-style: italic;">Prueba de conectividad desde VPCS confirmando el paso por el túnel basado en políticas de IKEv2</p>
-</div>
-</div>
